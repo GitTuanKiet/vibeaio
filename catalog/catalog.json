@@ -1,0 +1,51 @@
+{
+  "$schema": "./schema.json",
+  "catalog": [
+    {
+      "id": "rtk",
+      "name": "rtk-ai/rtk",
+      "description": "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
+      "repository": "https://github.com/rtk-ai/rtk",
+
+      "scripts": {
+        "require_commands": ["curl", "sh"],
+        "installed_check": "command -v rtk >/dev/null 2>&1",
+        "install": [
+          "curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh",
+          "rtk init -g"
+        ],
+        "postinstall": [
+          "RTK_VERSION=$(rtk --version | awk '{print $2}') && echo \"Installed rtk v$RTK_VERSION\""
+        ],
+        "preuninstall": [
+          "rtk init -g --uninstall"
+        ],
+        "uninstall": [
+          "rm -f \"$HOME/.local/bin/rtk\""
+        ]
+      }
+    },
+    {
+      "id": "token-optimizer",
+      "name": "alexgreensh/token-optimizer",
+      "description": "Find the ghost tokens. Fix them. Survive compaction. Avoid context quality decay.",
+      "repository": "https://github.com/alexgreensh/token-optimizer",
+
+      "scripts": {
+        "require_commands": ["claude"],
+        "installed_check":
+          "command -v claude >/dev/null 2>&1 && claude plugin list --json 2>/dev/null | grep -Fq 'token-optimizer@alexgreensh-token-optimizer'",
+        "install": [
+          "claude plugin marketplace add alexgreensh/token-optimizer || true",
+          "claude plugin install token-optimizer@alexgreensh-token-optimizer"
+        ],
+        "postinstall": [
+          "echo 'In Claude Code: /plugin → Marketplaces → alexgreensh-token-optimizer → enable auto-update if desired.'"
+        ],
+        "uninstall": [
+          "claude plugin uninstall token-optimizer@alexgreensh-token-optimizer -y || claude plugin marketplace remove alexgreensh/token-optimizer -y || true"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "vibeaio",
+  "description": "All-in-one vibecoding — install once, code with a curated stack.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "bun@1.3.13",
+  "scripts": {
+    "typecheck": "tsgo --noEmit",
+    "setup:catalog": "bun run scripts/setup-catalog.ts"
+  },
+  "devDependencies": {
+    "@typescript/native-preview": "latest",
+    "@types/bun": "latest",
+    "@tsconfig/bun": "latest",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.3.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

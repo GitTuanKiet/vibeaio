@@ -1,0 +1,9 @@
+{
+  "name": "vibeaio",
+  "skills": [
+    "skills/caveman"
+  ],
+  "commands": [
+    "commands/setup-catalog"
+  ]
+}

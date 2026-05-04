@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeaio/catalog/schema.json",
+  "title": "Vibeaio Catalog",
+  "description": "Declarative list of tools the vibeaio setup CLI can install or remove (Linux-only runtime). Each phase is a list of shell snippets run with bash -c.",
+  "type": "object",
+  "required": ["catalog"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "catalog": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Entry" }
+    }
+  },
+  "definitions": {
+    "Entry": {
+      "type": "object",
+      "required": ["id", "scripts"],
+      "additionalProperties": false,
+      "description": "One installable/removable tool. The recipe lives under `scripts`.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "Stable identifier shown in the CLI and used as the argument to `install`/`uninstall`."
+        },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "repository": { "type": "string", "format": "uri" },
+        "scripts": { "$ref": "#/definitions/Scripts" }
+      }
+    },
+    "Scripts": {
+      "type": "object",
+      "required": ["install", "uninstall"],
+      "additionalProperties": false,
+      "description": "Install/uninstall recipe. Each phase is a list of shell strings (bash -c). A non-zero exit stops that phase.",
+      "properties": {
+        "require_commands": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Commands that must already be on PATH before any phase runs."
+        },
+        "installed_check": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Bash snippet; exit 0 means installed so the `install` phase is skipped (unless --force)."
+        },
+        "preinstall":    { "$ref": "#/definitions/Steps" },
+        "install":       { "$ref": "#/definitions/Steps" },
+        "postinstall":   { "$ref": "#/definitions/Steps" },
+        "preuninstall":  { "$ref": "#/definitions/Steps" },
+        "uninstall":     { "$ref": "#/definitions/Steps" },
+        "postuninstall": { "$ref": "#/definitions/Steps" }
+      }
+    },
+    "Steps": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
